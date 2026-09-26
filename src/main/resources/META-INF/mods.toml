@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors="${mod_authors}"
+logoFile="immersive_enchanting_logo.png"
+description='''
+Enchanting is performed, not selected. Choosing an offer at the enchanting table begins a short rune-weaving ritual: runes travel from the sigil to four binding anchors, and you bind them with taps, holds and chords. The table still decides what magic was rolled; your ritual decides how cleanly it binds. Works with any enchantment the table can roll, including modded ones, and is tunable with datapacks.
+'''
+
+[[dependencies.${mod_id}]]
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"

@@ -1,0 +1,15 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "apotheosis:life_mending",
+      "apotheosis:natures_blessing",
+      "apotheosis:growth_serum",
+      "apotheosis:earths_boon",
+      "apotheosis:scavenger"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:verdant"
+  }
+}

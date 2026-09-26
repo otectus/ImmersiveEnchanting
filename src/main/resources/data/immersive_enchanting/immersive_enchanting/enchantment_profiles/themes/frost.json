@@ -1,0 +1,11 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "minecraft:frost_walker"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:frost"
+  }
+}

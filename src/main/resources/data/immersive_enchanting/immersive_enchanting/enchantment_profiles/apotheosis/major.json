@@ -1,0 +1,16 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "apotheosis:life_mending",
+      "apotheosis:knowledge"
+    ]
+  },
+  "difficulty": {
+    "min_tier": 3,
+    "arcane_value_multiplier": 1.25
+  },
+  "behavior": {
+    "protect_as_primary": true
+  }
+}

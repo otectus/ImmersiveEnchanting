@@ -1,0 +1,12 @@
+{
+  "priority": 0,
+  "selector": {
+    "curse": true
+  },
+  "difficulty": {
+    "offset": 4.0
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:void"
+  }
+}

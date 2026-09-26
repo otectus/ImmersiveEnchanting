@@ -1,0 +1,11 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "apotheosis:crescendo"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:storm"
+  }
+}

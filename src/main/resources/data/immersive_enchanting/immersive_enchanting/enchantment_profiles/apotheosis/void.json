@@ -1,0 +1,12 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "apotheosis:obliteration",
+      "apotheosis:splitting"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:void"
+  }
+}

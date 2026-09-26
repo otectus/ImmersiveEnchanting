@@ -1,0 +1,14 @@
+{
+  "priority": 10,
+  "selector": {
+    "enchantments": [
+      "ie_test:odd_binding"
+    ]
+  },
+  "difficulty": {
+    "multiplier": 1.4
+  },
+  "pattern": {
+    "hold_bias": 0.5
+  }
+}

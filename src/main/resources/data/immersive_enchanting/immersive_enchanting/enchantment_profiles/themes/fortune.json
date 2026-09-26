@@ -1,0 +1,14 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "minecraft:fortune",
+      "minecraft:looting",
+      "minecraft:luck_of_the_sea",
+      "minecraft:lure"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:verdant"
+  }
+}

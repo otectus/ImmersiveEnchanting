@@ -1,0 +1,12 @@
+{
+  "selector": {
+    "rarities": [
+      "very_rare"
+    ],
+    "namespaces": []
+  },
+  "difficulty": {
+    "offset": 2.0,
+    "max_tier": 4
+  }
+}

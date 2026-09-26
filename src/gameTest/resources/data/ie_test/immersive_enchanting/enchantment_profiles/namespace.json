@@ -1,0 +1,14 @@
+{
+  "selector": {
+    "namespaces": [
+      "ie_test"
+    ]
+  },
+  "difficulty": {
+    "offset": 5.0,
+    "multiplier": 0.5
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:storm"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "minecraft:channeling",
+      "minecraft:multishot",
+      "minecraft:quick_charge",
+      "minecraft:piercing"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:storm"
+  }
+}

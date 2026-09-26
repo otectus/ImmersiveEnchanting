@@ -1,0 +1,16 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "minecraft:respiration",
+      "minecraft:aqua_affinity",
+      "minecraft:depth_strider",
+      "minecraft:riptide",
+      "minecraft:loyalty",
+      "minecraft:impaling"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:tide"
+  }
+}

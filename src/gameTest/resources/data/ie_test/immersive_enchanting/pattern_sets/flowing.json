@@ -1,0 +1,47 @@
+{
+  "event_count": {
+    "min": 20,
+    "max": 44
+  },
+  "bpm": {
+    "min": 95.0,
+    "max": 145.0
+  },
+  "timing_windows_ms": {
+    "perfect": 70,
+    "good": 115,
+    "graze": 165
+  },
+  "allowed_event_types": [
+    "tap",
+    "hold",
+    "chord"
+  ],
+  "motifs": [
+    {
+      "id": "immersive_enchanting:alternating_pair",
+      "weight": 1.0
+    },
+    {
+      "id": "immersive_enchanting:palindrome",
+      "weight": 0.75
+    },
+    {
+      "id": "immersive_enchanting:hold_anchor",
+      "weight": 0.6
+    },
+    {
+      "id": "immersive_enchanting:chord_pulse",
+      "weight": 0.5
+    },
+    {
+      "id": "examplemod:not_a_motif",
+      "weight": 2.0
+    }
+  ],
+  "limits": {
+    "max_chord_size": 2,
+    "max_simultaneous_holds": 1,
+    "max_duration_seconds": 25.0
+  }
+}

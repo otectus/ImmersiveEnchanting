@@ -1,0 +1,11 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "apotheosis:spearfishing"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:tide"
+  }
+}

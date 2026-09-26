@@ -1,0 +1,11 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "apotheosis:icy_thorns"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:frost"
+  }
+}

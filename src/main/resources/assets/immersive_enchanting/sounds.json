@@ -1,0 +1,68 @@
+{
+  "ritual.begin": {
+    "subtitle": "immersive_enchanting.subtitle.ritual.begin",
+    "sounds": [
+      "immersive_enchanting:ritual/begin"
+    ]
+  },
+  "ritual.count_tick": {
+    "subtitle": "immersive_enchanting.subtitle.ritual.count_tick",
+    "sounds": [
+      "immersive_enchanting:ritual/count_tick"
+    ]
+  },
+  "rune.perfect": {
+    "subtitle": "immersive_enchanting.subtitle.rune.perfect",
+    "sounds": [
+      "immersive_enchanting:rune/perfect"
+    ]
+  },
+  "rune.good": {
+    "subtitle": "immersive_enchanting.subtitle.rune.good",
+    "sounds": [
+      "immersive_enchanting:rune/good"
+    ]
+  },
+  "rune.graze": {
+    "subtitle": "immersive_enchanting.subtitle.rune.graze",
+    "sounds": [
+      "immersive_enchanting:rune/graze"
+    ]
+  },
+  "rune.miss": {
+    "subtitle": "immersive_enchanting.subtitle.rune.miss",
+    "sounds": [
+      "immersive_enchanting:rune/miss"
+    ]
+  },
+  "rune.hold_pulse": {
+    "subtitle": "immersive_enchanting.subtitle.rune.hold_pulse",
+    "sounds": [
+      "immersive_enchanting:rune/hold_pulse"
+    ]
+  },
+  "ritual.success": {
+    "subtitle": "immersive_enchanting.subtitle.ritual.success",
+    "sounds": [
+      "immersive_enchanting:ritual/success"
+    ]
+  },
+  "ritual.perfect": {
+    "subtitle": "immersive_enchanting.subtitle.ritual.perfect",
+    "sounds": [
+      "immersive_enchanting:ritual/perfect"
+    ]
+  },
+  "ritual.frayed": {
+    "subtitle": "immersive_enchanting.subtitle.ritual.frayed",
+    "sounds": [
+      "immersive_enchanting:ritual/frayed"
+    ]
+  },
+  "ritual.failure": {
+    "subtitle": "immersive_enchanting.subtitle.ritual.failure",
+    "sounds": [
+      "immersive_enchanting:ritual/failure"
+    ]
+  }
+}

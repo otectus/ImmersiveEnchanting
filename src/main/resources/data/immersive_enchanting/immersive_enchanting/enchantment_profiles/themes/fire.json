@@ -1,0 +1,13 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "minecraft:fire_aspect",
+      "minecraft:flame",
+      "minecraft:fire_protection"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:ember"
+  }
+}

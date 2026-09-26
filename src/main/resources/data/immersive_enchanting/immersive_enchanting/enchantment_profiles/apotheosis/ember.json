@@ -1,0 +1,11 @@
+{
+  "priority": 0,
+  "selector": {
+    "enchantments": [
+      "apotheosis:berserkers_fury"
+    ]
+  },
+  "presentation": {
+    "theme": "immersive_enchanting:ember"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "count_in_beats": 3,
+  "tiers": [
+    {
+      "anchors": 3,
+      "event_count": {
+        "min": 12,
+        "max": 16
+      },
+      "bpm": {
+        "min": 80,
+        "max": 90
+      },
+      "timing_windows_ms": {
+        "perfect": 95,
+        "good": 145,
+        "graze": 200
+      },
+      "allowed_event_types": [
+        "tap"
+      ]
+    },
+    {
+      "anchors": 3,
+      "event_count": {
+        "min": 16,
+        "max": 22
+      },
+      "bpm": {
+        "min": 90,
+        "max": 100
+      },
+      "timing_windows_ms": {
+        "perfect": 85,
+        "good": 135,
+        "graze": 185
+      },
+      "allowed_event_types": [
+        "tap"
+      ]
+    },
+    {
+      "anchors": 4,
+      "event_count": {
+        "min": 22,
+        "max": 30
+      },
+      "bpm": {
+        "min": 100,
+        "max": 115
+      },
+      "timing_windows_ms": {
+        "perfect": 75,
+        "good": 120,
+        "graze": 170
+      },
+      "allowed_event_types": [
+        "tap",
+        "hold"
+      ]
+    },
+    {
+      "anchors": 4,
+      "event_count": {
+        "min": 28,
+        "max": 38
+      },
+      "bpm": {
+        "min": 115,
+        "max": 130
+      },
+      "timing_windows_ms": {
+        "perfect": 70,
+        "good": 110,
+        "graze": 155
+      },
+      "allowed_event_types": [
+        "tap",
+        "hold",
+        "chord"
+      ]
+    },
+    {
+      "anchors": 4,
+      "event_count": {
+        "min": 36,
+        "max": 48
+      },
+      "bpm": {
+        "min": 130,
+        "max": 145
+      },
+      "timing_windows_ms": {
+        "perfect": 60,
+        "good": 100,
+        "graze": 145
+      },
+      "allowed_event_types": [
+        "tap",
+        "hold",
+        "chord"
+      ]
+    },
+    {
+      "anchors": 4,
+      "event_count": {
+        "min": 44,
+        "max": 60
+      },
+      "bpm": {
+        "min": 145,
+        "max": 160
+      },
+      "timing_windows_ms": {
+        "perfect": 55,
+        "good": 90,
+        "graze": 130
+      },
+      "allowed_event_types": [
+        "tap",
+        "hold",
+        "chord"
+      ]
+    }
+  ],
+  "motifs": [
+    {
+      "id": "immersive_enchanting:scatter",
+      "weight": 0.6
+    },
+    {
+      "id": "immersive_enchanting:alternating_pair",
+      "weight": 1.0
+    },
+    {
+      "id": "immersive_enchanting:ascending_cascade",
+      "weight": 1.0
+    },
+    {
+      "id": "immersive_enchanting:descending_cascade",
+      "weight": 1.0
+    },
+    {
+      "id": "immersive_enchanting:pulse",
+      "weight": 0.7
+    },
+    {
+      "id": "immersive_enchanting:echo",
+      "weight": 1.0
+    },
+    {
+      "id": "immersive_enchanting:palindrome",
+      "weight": 0.8
+    },
+    {
+      "id": "immersive_enchanting:mirrored_cascade",
+      "weight": 0.9
+    },
+    {
+      "id": "immersive_enchanting:left_right_split",
+      "weight": 0.8
+    },
+    {
+      "id": "immersive_enchanting:center_cross",
+      "weight": 0.8
+    },
+    {
+      "id": "immersive_enchanting:simple_hold",
+      "weight": 1.0
+    },
+    {
+      "id": "immersive_enchanting:hold_anchor",
+      "weight": 1.0
+    },
+    {
+      "id": "immersive_enchanting:chord_pulse",
+      "weight": 0.9
+    },
+    {
+      "id": "immersive_enchanting:syncopated_echo",
+      "weight": 0.8
+    },
+    {
+      "id": "immersive_enchanting:chord_cascade",
+      "weight": 0.8
+    }
+  ],
+  "limits": {
+    "max_chord_size": 2,
+    "max_simultaneous_holds": 1,
+    "max_duration_seconds": 25.0
+  }
+}
