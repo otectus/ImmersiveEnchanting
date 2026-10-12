@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
  * plan, the score and the result. No packet from a client carries a score or an item.
  */
 public final class ModNetwork {
-    public static final String VERSION = "1";
+    public static final String VERSION = "2";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(ImmersiveEnchanting.id("main"),
             () -> VERSION, VERSION::equals, VERSION::equals);
 

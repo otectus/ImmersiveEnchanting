@@ -95,8 +95,11 @@ _What you are working on right now. One or two lines._
 
 ## Decisions
 
-_Choices that should not be re-litigated every session (why a system was built a
-certain way, APIs deliberately avoided, balance rules, naming rules)._
+- 1.1.1: `RitualPlanEvent.deny` is the one gate on rituals. `OfferPlanner.Plan.denial` carries it; `RitualSessionManager.start`
+  rejects a denied offer with `AbortReason.DENIED_BY_MOD` (appended last; `RitualAbortedS2C.detail` carries the reason)
+  before the profile bypass, and `SessionEvents` sends the denial with the preview (`OfferDifficultyS2C.denials`), which the
+  screen shows as a dimmed gauge and a red tooltip line. Protocol `ModNetwork.VERSION` is `2`. `advancement/ModAdvancements`
+  awards `first_binding` and `perfect_binding` from `finish`; core functionality never depends on them.
 
 ## Known issues
 

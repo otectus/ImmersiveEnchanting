@@ -32,8 +32,9 @@ Rune: Left, Down, Up, Right). Change them under *Options > Controls > Immersive 
 anchors with your actual keys. In the circle layout four anchors sit west, south, north and east (A, S, W, D); three
 anchors arch west, north and east and use A, W and D. Classic lanes read left to right in the same order.
 
-Pressing Esc after the first rune has arrived asks for confirmation. Abandoning counts as a failed binding, as does
-closing the table, disconnecting, or letting the ritual time out.
+Pressing Esc after the first rune has arrived asks for confirmation (a held Esc does not confirm). Abandoning counts as
+a failed binding, as does closing the table, disconnecting, or letting the ritual time out. When the table closes
+mid-ritual, its outcome - the binding, what happened to each enchantment and what was consumed - is written to chat.
 
 ### Complexity
 
@@ -278,9 +279,18 @@ vanilla rules.
 
 Server-thread events on the Forge bus:
 - `RitualPlanEvent`: scale or offset the complexity, override the pattern set. Also posted for previews; see
-  `isPreview()`.
+  `isPreview()`. Since 1.1.1, `deny(Component)` refuses the offer to that player: a real ritual is rejected before
+  anything is charged (`AbortReason.DENIED_BY_MOD`, the reason shown), and the offer preview marks it locked with the
+  reason in its tooltip. The denial outranks the per-enchantment ritual bypass, so a gated offer cannot be enchanted
+  directly either. Progression mods gate rituals here.
 - `RitualResultEvent.Pre` (cancelable): cancelling aborts without cost, and `setResolved` narrows the result.
 - `RitualResultEvent.Post`: reports what was applied.
+
+Advancements (since 1.1.1, awarded from code, never required for anything): `immersive_enchanting:first_binding` for
+the first ritual that binds something and `immersive_enchanting:perfect_binding` for a Perfect band.
+
+The network protocol is `2` since 1.1.1 (the preview and abort packets carry the reasons); clients and servers must
+match.
 
 ## Building and testing
 

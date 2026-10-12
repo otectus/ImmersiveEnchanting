@@ -147,7 +147,8 @@ public final class EnchantmentScreenHooks {
                         && ServerConfig.get(ServerConfig.PREVIEW_RITUAL_DIFFICULTY)) {
                     EnchantmentScreen es = (EnchantmentScreen) screen;
                     byte[] tiers = OfferPreview.get(es.getMenu().containerId);
-                    if (tiers != null) RitualRenderer.renderOfferGauge(event.getGuiGraphics(), es.getGuiLeft(), es.getGuiTop(), tiers);
+                    if (tiers != null) RitualRenderer.renderOfferGauge(event.getGuiGraphics(), es.getGuiLeft(), es.getGuiTop(), tiers,
+                            OfferPreview.locked(es.getMenu().containerId));
                 }
             }
         }
@@ -182,6 +183,10 @@ public final class EnchantmentScreenHooks {
         for (int i = 0; i < 6; i++) gauge.append(i <= tier.index() ? '◆' : '◇');
         elements.add(1, Either.left(Component.translatable("immersive_enchanting.preview.tooltip",
                 Component.translatable("immersive_enchanting.tier." + tier.id()), gauge.toString()).withStyle(ChatFormatting.GOLD)));
+        Component denial = OfferPreview.denial(screen.getMenu().containerId, offer);
+        if (denial != null) {
+            elements.add(2, Either.left(Component.translatable("immersive_enchanting.preview.locked", denial).withStyle(ChatFormatting.RED)));
+        }
     }
 
     @SubscribeEvent

@@ -1,0 +1,23 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:enchanting_table"
+    },
+    "title": {
+      "translate": "advancements.immersive_enchanting.root.title"
+    },
+    "description": {
+      "translate": "advancements.immersive_enchanting.root.description"
+    },
+    "background": "minecraft:textures/block/purpur_block.png",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

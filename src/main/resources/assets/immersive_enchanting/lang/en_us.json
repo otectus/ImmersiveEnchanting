@@ -49,6 +49,7 @@
   "immersive_enchanting.result.cost": "Consumed %s levels and %s lapis",
   "immersive_enchanting.result.cost_points": "Consumed %s experience points and %s lapis",
   "immersive_enchanting.result.no_cost": "Nothing was consumed",
+  "immersive_enchanting.result.orphan": "Ritual outcome (the table was closed): %s. %s. %s.",
   "immersive_enchanting.result.continue": "Click or press any key to continue",
   "immersive_enchanting.result.practice_continue": "Press any key to try again — Esc to leave",
 
@@ -73,6 +74,14 @@
   "immersive_enchanting.abort.bypassed": "Enchanted without a ritual.",
   "immersive_enchanting.abort.version_mismatch": "This client's ritual version does not match the server's.",
   "immersive_enchanting.abort.internal_error": "The ritual failed unexpectedly; nothing was consumed.",
+  "immersive_enchanting.abort.denied_by_mod": "This offer is beyond you for now.",
+  "immersive_enchanting.preview.locked": "Locked: %s",
+  "advancements.immersive_enchanting.root.title": "Immersive Enchanting",
+  "advancements.immersive_enchanting.root.description": "Bind magic with your own hands.",
+  "advancements.immersive_enchanting.first_binding.title": "First Binding",
+  "advancements.immersive_enchanting.first_binding.description": "Complete an enchanting ritual and bind at least one enchantment.",
+  "advancements.immersive_enchanting.perfect_binding.title": "Perfect Binding",
+  "advancements.immersive_enchanting.perfect_binding.description": "Bind a ritual perfectly, every rune on time.",
   "immersive_enchanting.abort.timeout": "The enchanting table did not answer.",
 
   "immersive_enchanting.command.debug.no_table": "No supported enchanting table is open (%s).",

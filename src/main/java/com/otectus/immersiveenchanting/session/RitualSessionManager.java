@@ -1,6 +1,7 @@
 package com.otectus.immersiveenchanting.session;
 
 import com.otectus.immersiveenchanting.ImmersiveEnchanting;
+import com.otectus.immersiveenchanting.advancement.ModAdvancements;
 import com.otectus.immersiveenchanting.api.AbortReason;
 import com.otectus.immersiveenchanting.api.ApplyResult;
 import com.otectus.immersiveenchanting.api.ChargePolicy;
@@ -112,6 +113,14 @@ public final class RitualSessionManager {
                 return;
             }
             OfferPlanner.Plan plan = OfferPlanner.plan(player, adapter, snapshot.get(), timingAssist, false);
+            if (plan.denied()) {
+                // A RitualPlanEvent listener refused the offer: nothing was charged, and the denial outranks the
+                // profile bypass below, so a gated offer cannot be enchanted directly either.
+                ImmersiveEnchanting.debug("offer {} denied for {} by a mod: {}", offerIndex, player.getGameProfile().getName(),
+                        plan.denial().getString());
+                ModNetwork.sendTo(player, new RitualAbortedS2C(null, containerId, AbortReason.DENIED_BY_MOD, plan.denial()));
+                return;
+            }
             if (!plan.ritualEnabled()) {
                 ImmersiveEnchanting.debug("offer {} contains an enchantment with rituals disabled by profile; enchanting directly", offerIndex);
                 bypass(player, adapter, menu, offerIndex);
@@ -287,6 +296,10 @@ public final class RitualSessionManager {
         session.state = RitualState.RESOLVED;
         List<EnchantmentInstance> bound = result.bound() != null ? result.bound() : toApply;
         MinecraftForge.EVENT_BUS.post(new RitualResultEvent.Post(player, session, band, scoreValue, planned, bound, result));
+        if (!bound.isEmpty()) {
+            ModAdvancements.award(player, ModAdvancements.FIRST_BINDING);
+            if (band == OutcomeBand.PERFECT) ModAdvancements.award(player, ModAdvancements.PERFECT_BINDING);
+        }
         RitualEffects.play(player, session, band, abandoned);
         ModNetwork.sendTo(player, resolvedPacket(session, band, score, abandoned, planned, bound, result));
         ImmersiveEnchanting.debug("session {} resolved: {} ({}), bound {} of {}, charged {} levels {} points {} lapis",

@@ -1,0 +1,23 @@
+{
+  "parent": "immersive_enchanting:first_binding",
+  "display": {
+    "icon": {
+      "item": "minecraft:nether_star"
+    },
+    "title": {
+      "translate": "advancements.immersive_enchanting.perfect_binding.title"
+    },
+    "description": {
+      "translate": "advancements.immersive_enchanting.perfect_binding.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

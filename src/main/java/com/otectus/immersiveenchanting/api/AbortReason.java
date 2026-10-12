@@ -24,7 +24,9 @@ public enum AbortReason {
     ADMIN,
     BYPASSED,
     VERSION_MISMATCH,
-    INTERNAL_ERROR;
+    INTERNAL_ERROR,
+    /** A {@code RitualPlanEvent} listener refused the offer (since 1.1.0); the reason travels with the abort. */
+    DENIED_BY_MOD;
 
     public String id() {
         return name().toLowerCase(Locale.ROOT);

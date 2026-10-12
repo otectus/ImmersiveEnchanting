@@ -46,7 +46,7 @@ public final class LaneLayout implements RitualLayout {
     @Override
     public void backdrop(VectorBatch b, Palette.Theme theme, float stability, long nowMs, boolean countIn, double beatPhase, boolean reducedMotion) {
         float left = laneX(0) - laneWidth / 2, right = laneX(anchors - 1) + laneWidth / 2;
-        b.rect(left - 3, top - 6, right + 3, line + rune * 1.8f, Palette.withAlpha(0x27241F, 0.84f));
+        b.rect(left - 3, top - 6, right + 3, line + rune * 1.8f, Palette.withAlpha(VanillaGui.DISPLAY_FILL, 0.84f));
         for (int lane = 0; lane < anchors; lane++) {
             float x = laneX(lane);
             b.rect(x - laneWidth / 2 + 1, top, x + laneWidth / 2 - 1, line + rune * 1.4f, Palette.withAlpha(0xFFFFFF, lane % 2 == 0 ? 0.035f : 0.055f));
@@ -70,7 +70,7 @@ public final class LaneLayout implements RitualLayout {
         for (int i = 0; i < segments; i++) {
             float y1 = line - i * segH, y0 = y1 - segH + 1.5f;
             int color = i < lit ? Palette.withAlpha(theme.primary(), 0.85f)
-                    : (i < lit + 2 && crackedAlpha > 0 ? Palette.withAlpha(0xFFFFFF, crackedAlpha * 0.6f) : Palette.withAlpha(0x4F473C, 0.7f));
+                    : (i < lit + 2 && crackedAlpha > 0 ? Palette.withAlpha(0xFFFFFF, crackedAlpha * 0.6f) : Palette.withAlpha(0x555555, 0.7f));
             b.rect(x, y0, x + 5, y1, color);
         }
     }

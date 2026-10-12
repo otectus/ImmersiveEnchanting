@@ -10,6 +10,7 @@ import com.otectus.immersiveenchanting.ritual.Judgement;
 import com.otectus.immersiveenchanting.ritual.OutcomeBand;
 import com.otectus.immersiveenchanting.ritual.RitualEvent;
 import com.otectus.immersiveenchanting.ritual.RitualPattern;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -54,11 +55,9 @@ public final class RitualRenderer {
         g.pose().translate(0, 0, Z);
         dim(g, viewportWidth, viewportHeight);
         fit(g, viewportWidth, viewportHeight, w, h);
-        StonebornGui.panel(g, 0, 0, w, h);
-        g.fill(6, 6, w - 6, 50, StonebornGui.SURFACE);
-        StonebornGui.rule(g, 12, 49, w - 24);
-        StonebornGui.well(g, 12, 56, w - 24, h - 98);
-        g.fill(12, h - 36, w - 12, h - 8, StonebornGui.SURFACE);
+        // A vanilla container panel: title block above, the runes in a dark display, the status line below.
+        VanillaGui.panel(g, 0, 0, w, h);
+        VanillaGui.display(g, 8, 46, w - 16, h - 84);
         if (ClientConfig.get(ClientConfig.SCREEN_SHAKE) && !reduced && now - r.lastMissAtMs < 120) {
             float s = (float) (1.5 * (1 - (now - r.lastMissAtMs) / 120.0));
             g.pose().translate(((now / 16) % 2 == 0 ? s : -s), ((now / 24) % 2 == 0 ? -s * 0.6f : s * 0.6f), 0);
@@ -212,8 +211,11 @@ public final class RitualRenderer {
             Component key = RitualKeyMappings.label(lane, r.pattern.anchors());
             int tw = font.width(key);
             int x = Math.round(p[0] - tw / 2f), y = Math.round(p[1] - 4);
-            StonebornGui.well(g, x - 4, y - 3, tw + 8, 16);
-            g.drawString(font, key, x, y, r.isDown(lane) ? Palette.lane(lane) | 0xFF000000 : StonebornGui.TEXT, false);
+            // A keycap drawn as a vanilla button face, highlighted while held, as on the controls screen.
+            int capW = Math.max(16, tw + 8);
+            boolean down = r.isDown(lane);
+            VanillaGui.key(g, x + tw / 2 - capW / 2, y - 4, capW, 16, down);
+            g.drawString(font, key, x, y, down ? Palette.lane(lane) | 0xFF000000 : 0xFFFFFFFF, true);
         }
     }
 
@@ -239,17 +241,16 @@ public final class RitualRenderer {
     private static void hud(GuiGraphics g, Font font, ClientRitual r, RitualLayout layout, Palette.Theme theme, long now, int w, int h,
                             boolean awaiting) {
         RitualPattern pattern = r.pattern;
-        int top = 12;
+        // Container title and clue at vanilla's label inset, with the ritual's progress as a bar beneath them.
         Component title = Component.translatable("immersive_enchanting.ritual.title",
                 Component.translatable("immersive_enchanting.tier." + DifficultyTier.byIndex(r.params.tier()).id()));
-        g.drawCenteredString(font, StonebornGui.clipped(font, title, w - 32), w / 2, top, StonebornGui.TEXT_WARM);
+        g.drawString(font, VanillaGui.clipped(font, title, w - 16), 8, 7, VanillaGui.LABEL, false);
         if (r.clue != null) {
-            g.drawCenteredString(font, StonebornGui.clipped(font, Component.translatable("immersive_enchanting.ritual.clue", r.clue), w - 32), w / 2, top + 12, StonebornGui.TEXT_DIM);
+            g.drawString(font, VanillaGui.clipped(font, Component.translatable("immersive_enchanting.ritual.clue", r.clue), w - 16), 8, 19,
+                    VanillaGui.LABEL_DIM, false);
         }
         float progress = (float) Math.max(0, Math.min(1, (now - pattern.countInMs()) / (double) Math.max(1, pattern.endMs() - pattern.countInMs())));
-        int barW = Math.min(160, w / 3), bx = w / 2 - barW / 2, by = top + 28;
-        g.fill(bx, by, bx + barW, by + 2, StonebornGui.INSET);
-        g.fill(bx, by, bx + Math.round(barW * progress), by + 2, StonebornGui.BRASS_LIGHT);
+        VanillaGui.bar(g, 9, 33, w - 18, 3, progress, 0xFF000000 | theme.primary());
 
         float[] c = layout.center();
         if (now < pattern.countInMs()) {
@@ -262,7 +263,7 @@ public final class RitualRenderer {
             g.pose().popPose();
             Component hint = Component.translatable("immersive_enchanting.ritual.hint");
             int hy = layout.radial() ? Math.round(c[1] + layout.runeRadius() * 4.2f) : Math.round(c[1] + 24);
-            g.drawCenteredString(font, StonebornGui.clipped(font, hint, w - 40), w / 2, hy, StonebornGui.TEXT);
+            g.drawCenteredString(font, VanillaGui.clipped(font, hint, w - 40), w / 2, hy, VanillaGui.DISPLAY_TEXT);
         } else if (awaiting) {
             g.drawCenteredString(font, Component.translatable("immersive_enchanting.ritual.binding"), Math.round(c[0]), Math.round(c[1] - 4), 0xFFFFFFFF);
         }
@@ -274,11 +275,11 @@ public final class RitualRenderer {
             if (r.engine.combo() >= 2) status.append("   ");
             status.append(Component.translatable("immersive_enchanting.ritual.accuracy", Math.round(r.engine.runningAccuracy())));
         }
-        g.drawCenteredString(font, status, w / 2, bottom, StonebornGui.TEXT);
+        centered(g, font, status, w / 2, bottom, VanillaGui.LABEL);
         if (r.escArmedUntilMs > now) {
-            g.drawCenteredString(font, Component.translatable("immersive_enchanting.ritual.abandon_confirm"), w / 2, bottom + 11, 0xFFFFB0A0);
+            centered(g, font, Component.translatable("immersive_enchanting.ritual.abandon_confirm"), w / 2, bottom + 11, VanillaGui.LABEL_WARNING);
         } else if (now < pattern.countInMs()) {
-            g.drawCenteredString(font, Component.translatable("immersive_enchanting.ritual.cancel_hint"), w / 2, bottom + 11, StonebornGui.TEXT_DIM);
+            centered(g, font, Component.translatable("immersive_enchanting.ritual.cancel_hint"), w / 2, bottom + 11, VanillaGui.LABEL_DIM);
         }
     }
 
@@ -297,9 +298,9 @@ public final class RitualRenderer {
         if (scores) {
             details.add(Component.translatable("immersive_enchanting.result.score", (int) Math.floor(view.score()),
                     Math.round(view.accuracy()), view.longestCombo()));
-            colors.add(StonebornGui.TEXT);
+            colors.add(VanillaGui.DISPLAY_TEXT);
             details.add(Component.translatable("immersive_enchanting.result.counts", view.perfect(), view.good(), view.graze(), view.miss()));
-            colors.add(StonebornGui.TEXT_DIM);
+            colors.add(VanillaGui.DISPLAY_TEXT_DIM);
         }
         for (ResultView.Line line : view.lines()) {
             details.add(switch (line.fate()) {
@@ -319,11 +320,12 @@ public final class RitualRenderer {
                     ? Component.translatable("immersive_enchanting.result.no_cost")
                     : view.xpPoints() > 0 ? Component.translatable("immersive_enchanting.result.cost_points", view.xpPoints(), view.lapis())
                     : Component.translatable("immersive_enchanting.result.cost", view.xpLevels(), view.lapis()));
-            colors.add(StonebornGui.TEXT_DIM);
+            colors.add(VanillaGui.DISPLAY_TEXT_DIM);
         }
         List<List<FormattedCharSequence>> rows = details.stream().map(c -> font.split(c, panelW - 32)).toList();
         int bodyY = 34 + subtitleLines.size() * 11;
-        int footerY = bodyY + rows.stream().mapToInt(row -> row.size() * 11 + 4).sum() + 10;
+        // The readout keeps the same 5 px margin below its last line as above its first.
+        int footerY = bodyY + rows.stream().mapToInt(row -> row.size() * 11 + 4).sum() + 4;
         Component footer = Component.translatable(view.practice() ? "immersive_enchanting.result.practice_continue" : "immersive_enchanting.result.continue");
         List<FormattedCharSequence> footerLines = font.split(footer, panelW - 32);
         int panelH = footerY + footerLines.size() * 11 + 12;
@@ -332,17 +334,17 @@ public final class RitualRenderer {
         g.pose().translate(0, 0, Z);
         dim(g, w, h);
         fit(g, w, h, panelW, panelH);
-        StonebornGui.panel(g, 0, 0, panelW, panelH);
-        g.fill(6, 6, panelW - 6, bodyY - 3, StonebornGui.SURFACE);
-        StonebornGui.well(g, 10, bodyY - 2, panelW - 20, footerY - bodyY + 1);
-        g.fill(10, footerY + 3, panelW - 10, panelH - 8, StonebornGui.SURFACE);
+        // The band's sigil and the readout keep their colours in dark displays; the headings are vanilla labels.
+        VanillaGui.panel(g, 0, 0, panelW, panelH);
+        VanillaGui.display(g, 10, 9, 28, 28);
+        VanillaGui.display(g, 10, bodyY - 2, panelW - 20, footerY - bodyY + 1);
         VectorBatch b = BATCH.begin(g);
         emblem(b, view.band(), 24, 23, 11, accent, view.ageMs());
         b.end();
         g.pose().translate(0, 0, 1);
         Component title = Component.translatable("immersive_enchanting.result." + view.band().id());
-        g.drawString(font, StonebornGui.clipped(font, title, panelW - 58), 44, 12, accent | 0xFF000000, false);
-        for (int i = 0; i < subtitleLines.size(); i++) g.drawString(font, subtitleLines.get(i), 44, 25 + i * 11, StonebornGui.TEXT_DIM, false);
+        g.drawString(font, VanillaGui.clipped(font, title, panelW - 58), 44, 12, VanillaGui.LABEL, false);
+        for (int i = 0; i < subtitleLines.size(); i++) g.drawString(font, subtitleLines.get(i), 44, 25 + i * 11, VanillaGui.LABEL_DIM, false);
         int y = bodyY + 4;
         for (int i = 0; i < rows.size(); i++) {
             for (FormattedCharSequence line : rows.get(i)) {
@@ -351,7 +353,7 @@ public final class RitualRenderer {
             }
             y += 4;
         }
-        for (int i = 0; i < footerLines.size(); i++) g.drawCenteredString(font, footerLines.get(i), panelW / 2, footerY + 5 + i * 11, StonebornGui.TEXT_DIM);
+        for (int i = 0; i < footerLines.size(); i++) centered(g, font, footerLines.get(i), panelW / 2, footerY + 5 + i * 11, VanillaGui.LABEL_DIM);
         g.pose().popPose();
     }
 
@@ -410,37 +412,48 @@ public final class RitualRenderer {
         g.pose().translate(0, 0, Z);
         dim(g, w, h);
         fit(g, w, h, 280, 58);
-        StonebornGui.dialog(g, 0, 0, 280, 58);
+        VanillaGui.panel(g, 0, 0, 280, 58);
         Font font = Minecraft.getInstance().font;
         List<FormattedCharSequence> lines = font.split(Component.translatable("immersive_enchanting.ritual.preparing"), 252);
-        for (int i = 0; i < lines.size(); i++) g.drawCenteredString(font, lines.get(i), 140, 20 + i * 11, StonebornGui.TEXT_WARM);
+        for (int i = 0; i < lines.size(); i++) centered(g, font, lines.get(i), 140, 20 + i * 11, VanillaGui.LABEL);
         g.pose().popPose();
     }
 
+    /** A message on the player's text background (as chat and the other Immersive workshops' notices use), white text. */
     public static void renderToast(GuiGraphics g, Component message, int w, float alpha) {
         if (alpha <= 0F) return;
         Font font = Minecraft.getInstance().font;
         int tw = Math.min(w - 40, font.width(message));
         List<FormattedCharSequence> lines = font.split(message, tw);
         int x = (w - tw) / 2 - 8, bottom = 20 + lines.size() * 11;
+        int background = Minecraft.getInstance().options.getBackgroundColor(0.5F);
+        int backgroundAlpha = Math.round(((background >>> 24) & 0xFF) * Math.min(1F, alpha));
         g.pose().pushPose();
         g.pose().translate(0, 0, Z + 10);
-        g.fill(x, 8, x + tw + 16, bottom, Palette.withAlpha(StonebornGui.EDGE, alpha));
-        g.fill(x + 1, 9, x + tw + 15, bottom - 1, Palette.withAlpha(StonebornGui.BORDER, alpha));
-        g.fill(x + 2, 10, x + tw + 14, bottom - 2, Palette.withAlpha(StonebornGui.SURFACE, alpha));
-        for (int i = 0; i < lines.size(); i++) g.drawCenteredString(font, lines.get(i), w / 2, 14 + i * 11, Palette.text(StonebornGui.TEXT_WARM, alpha));
+        g.fill(x, 8, x + tw + 16, bottom, (backgroundAlpha << 24) | (background & 0xFFFFFF));
+        for (int i = 0; i < lines.size(); i++) g.drawCenteredString(font, lines.get(i), w / 2, 14 + i * 11, Palette.text(0xFFFFFF, alpha));
         g.pose().popPose();
     }
 
     /** Six-step complexity gauge in the margin right of each enchanting offer (tier 0 = one step). */
     public static void renderOfferGauge(GuiGraphics g, int left, int top, byte[] tiers) {
+        renderOfferGauge(g, left, top, tiers, null);
+    }
+
+    /**
+     * As above; a locked offer (refused by a mod for this player) draws its gauge dimmed instead of in gold. Lit steps
+     * take the gold of the tooltip's ritual line, unlit ones the grey of an empty slot on the table's panel.
+     */
+    public static void renderOfferGauge(GuiGraphics g, int left, int top, byte[] tiers, boolean @Nullable [] locked) {
         for (int offer = 0; offer < 3 && offer < tiers.length; offer++) {
             int tier = tiers[offer];
             if (tier < 0) continue;
+            boolean isLocked = locked != null && offer < locked.length && locked[offer];
+            int lit = isLocked ? VanillaGui.LABEL_DIM : VanillaGui.GOLD;
             int x = left + 169, y = top + 14 + 19 * offer + 1;
             for (int s = 0; s < 6; s++) {
                 int sy = y + 15 - s * 3;
-                g.fill(x, sy, x + 3, sy + 2, s <= tier ? StonebornGui.BRASS_LIGHT : StonebornGui.INSET);
+                g.fill(x, sy, x + 3, sy + 2, s <= tier ? lit : VanillaGui.TRACK);
             }
         }
     }
@@ -454,8 +467,17 @@ public final class RitualRenderer {
 
     private static void dim(GuiGraphics g, int w, int h) {
         float dim = (float) ClientConfig.get(ClientConfig.BACKGROUND_DIM);
-        if (dim > 0.001f) g.fill(0, 0, w, h, Palette.withAlpha(0x151310, dim));
+        if (dim > 0.001f) g.fill(0, 0, w, h, Palette.withAlpha(0x101010, dim)); // vanilla's screen background tone
         g.flush();
+    }
+
+    /** Centred text without a shadow, as vanilla draws labels on its light panels. */
+    private static void centered(GuiGraphics g, Font font, Component text, int centerX, int y, int color) {
+        g.drawString(font, text, centerX - font.width(text) / 2, y, color, false);
+    }
+
+    private static void centered(GuiGraphics g, Font font, FormattedCharSequence text, int centerX, int y, int color) {
+        g.drawString(font, text, centerX - font.width(text) / 2, y, color, false);
     }
 
     private static double frac(double v) {

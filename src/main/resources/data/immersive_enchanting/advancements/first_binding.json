@@ -1,0 +1,23 @@
+{
+  "parent": "immersive_enchanting:root",
+  "display": {
+    "icon": {
+      "item": "minecraft:enchanted_book"
+    },
+    "title": {
+      "translate": "advancements.immersive_enchanting.first_binding.title"
+    },
+    "description": {
+      "translate": "advancements.immersive_enchanting.first_binding.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 package com.otectus.immersiveenchanting.api.event;
 
 import com.otectus.immersiveenchanting.api.OfferSnapshot;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.Event;
@@ -22,6 +23,8 @@ public class RitualPlanEvent extends Event {
     private double difficultyOffset = 0.0;
     @Nullable
     private ResourceLocation patternSetOverride;
+    @Nullable
+    private Component denial;
 
     public RitualPlanEvent(ServerPlayer player, ResourceLocation adapterId, OfferSnapshot snapshot, boolean preview) {
         this.player = player;
@@ -73,5 +76,25 @@ public class RitualPlanEvent extends Event {
     /** A pattern set id to use instead of the profiles' choice; unknown ids fall back to the default set. */
     public void setPatternSetOverride(@Nullable ResourceLocation patternSet) {
         this.patternSetOverride = patternSet;
+    }
+
+    /**
+     * Refuses this offer to the player with a reason (since 1.1.0). A real ritual is then rejected before anything
+     * is charged, with {@code AbortReason.DENIED_BY_MOD} and the reason shown; a preview marks the offer as locked
+     * and shows the reason in its tooltip. The first denial stands; later calls do not replace it. Progression mods
+     * gate rituals here rather than after the player has played one.
+     */
+    public void deny(Component reason) {
+        if (reason != null && this.denial == null) this.denial = reason;
+    }
+
+    /** Whether a listener refused this offer. */
+    public boolean isDenied() {
+        return denial != null;
+    }
+
+    @Nullable
+    public Component getDenial() {
+        return denial;
     }
 }

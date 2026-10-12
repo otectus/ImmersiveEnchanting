@@ -141,9 +141,18 @@ public final class ClientSmokeTest {
         step("offers 2", 100, mc -> ClientRitualController.phase() == ClientRitualController.Phase.IDLE && menu(mc).costs[1] > 0);
         ritual("silent", 1, false, 0.0, 0);
         step("result shown 2", 900, mc -> ClientRitualController.phase() == ClientRitualController.Phase.RESULT);
+        // Space goes down as the result appears and stays held: its auto-repeat must not dismiss the result.
+        act("hold space into result", 1, mc -> key(mc, GLFW.GLFW_KEY_SPACE, false));
         act("shot failed result", 14, mc -> shot(mc, "smoketest_result_failed"));
         verify("silent", false);
-        act("dismiss 2", 16, mc -> key(mc, GLFW.GLFW_KEY_SPACE, true));
+        act("space auto-repeat", 2, mc -> key(mc, GLFW.GLFW_KEY_SPACE, false));
+        act("result kept", 1, mc -> checks.put("result_survives_held_key_repeat",
+                ClientRitualController.phase() == ClientRitualController.Phase.RESULT));
+        act("release space", 2, mc -> keyUp(mc, GLFW.GLFW_KEY_SPACE));
+        act("dismiss 2", 16, mc -> {
+            key(mc, GLFW.GLFW_KEY_SPACE, true);
+            checks.put("result_dismissed_by_fresh_press", ClientRitualController.phase() == ClientRitualController.Phase.IDLE);
+        });
 
         // 3. A sloppy ritual on classic lanes.
         act("classic lanes", 2, mc -> ClientConfig.RITUAL_LAYOUT.set(ClientConfig.RitualLayout.CLASSIC_LANES));
@@ -382,6 +391,10 @@ public final class ClientSmokeTest {
                 }
                 return;
             }
+            if (StoreScreenshots.enabled()) {
+                StoreScreenshots.tick(mc);
+                return;
+            }
             if (stepIndex >= steps.size()) {
                 finish(mc, allPassed(), "complete");
                 return;
@@ -434,6 +447,11 @@ public final class ClientSmokeTest {
         if (screen == null) return;
         if (!ForgeHooksClient.onScreenKeyPressedPre(screen, key, 0, 0)) screen.keyPressed(key, 0, 0);
         if (release && mc.screen == screen && !ForgeHooksClient.onScreenKeyReleasedPre(screen, key, 0, 0)) screen.keyReleased(key, 0, 0);
+    }
+
+    private static void keyUp(Minecraft mc, int key) {
+        Screen screen = mc.screen;
+        if (screen != null && !ForgeHooksClient.onScreenKeyReleasedPre(screen, key, 0, 0)) screen.keyReleased(key, 0, 0);
     }
 
     /** Clicks an offer row through Forge's pre-click event, as the mouse handler does. */

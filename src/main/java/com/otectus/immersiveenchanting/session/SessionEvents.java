@@ -11,6 +11,7 @@ import com.otectus.immersiveenchanting.enchanting.AdapterRegistry;
 import com.otectus.immersiveenchanting.enchanting.OfferPlanner;
 import com.otectus.immersiveenchanting.network.ModNetwork;
 import com.otectus.immersiveenchanting.network.OfferDifficultyS2C;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -86,18 +87,21 @@ public final class SessionEvents {
         Long previous = PREVIEWED.put(player.getUUID(), key);
         if (previous != null && previous == key) return;
         byte[] tiers = new byte[3];
+        Component[] denials = new Component[3];
         for (int offer = 0; offer < 3; offer++) {
             tiers[offer] = -1;
             try {
                 Optional<OfferSnapshot> snapshot = adapter.snapshot(player, menu, offer);
                 if (snapshot.isPresent() && !snapshot.get().plannedEnchantments().isEmpty()) {
-                    tiers[offer] = (byte) OfferPlanner.plan(player, adapter, snapshot.get(), 1.0, true).tier();
+                    OfferPlanner.Plan plan = OfferPlanner.plan(player, adapter, snapshot.get(), 1.0, true);
+                    tiers[offer] = (byte) plan.tier();
+                    denials[offer] = plan.denial();
                 }
             } catch (RuntimeException e) {
                 ImmersiveEnchanting.debug("offer preview failed for offer {} on {}: {}", offer, adapter.id(), e.toString());
             }
         }
-        ModNetwork.sendTo(player, new OfferDifficultyS2C(menu.containerId, tiers));
+        ModNetwork.sendTo(player, new OfferDifficultyS2C(menu.containerId, tiers, denials));
     }
 
     private SessionEvents() {}

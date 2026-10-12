@@ -69,7 +69,7 @@ public final class RadialLayout implements RitualLayout {
     public void backdrop(VectorBatch b, Palette.Theme theme, float stability, long nowMs, boolean countIn, double beatPhase, boolean reducedMotion) {
         float spin = reducedMotion ? 0 : nowMs / 9000f;
         // Soft disc behind the circle keeps runes readable on busy screens.
-        b.disc(cx, cy, radius * 1.18f, Palette.withAlpha(0x27241F, 0.72f));
+        b.disc(cx, cy, radius * 1.18f, Palette.withAlpha(VanillaGui.DISPLAY_FILL, 0.72f));
         b.circle(cx, cy, radius, 1.5f, Palette.withAlpha(theme.secondary(), 0.45f));
         b.circle(cx, cy, radius * 1.075f, 0.8f, Palette.withAlpha(theme.primary(), 0.22f));
         for (int lane = 0; lane < dx.length; lane++) {
@@ -110,7 +110,7 @@ public final class RadialLayout implements RitualLayout {
             int color;
             if (i < lit) color = Palette.withAlpha(theme.primary(), 0.85f);
             else if (i < lit + 4 && crackedAlpha > 0) color = Palette.withAlpha(0xFFFFFF, crackedAlpha * 0.6f);
-            else color = Palette.withAlpha(0x4F473C, 0.7f);
+            else color = Palette.withAlpha(0x555555, 0.7f);
             b.ring(cx, cy, rIn, rOut, a0, a1, color, 3);
         }
     }

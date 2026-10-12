@@ -17,11 +17,14 @@ import com.otectus.immersiveenchanting.ritual.PatternSetDef;
 import com.otectus.immersiveenchanting.ritual.RitualParams;
 import com.otectus.immersiveenchanting.ritual.RitualRandom;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraftforge.common.MinecraftForge;
+
+import javax.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,12 @@ public final class OfferPlanner {
 
     public record Plan(OfferSnapshot snapshot, List<PlannedEnchantment> enchantments, DifficultyCalculator.Breakdown difficulty,
                        ResourceLocation patternSetId, RitualParams params, long seed, ResourceLocation theme,
-                       boolean ritualEnabled) {
+                       boolean ritualEnabled, @Nullable Component denial) {
+
+        /** Whether a {@code RitualPlanEvent} listener refused this offer; see {@link #denial()} for the reason. */
+        public boolean denied() {
+            return denial != null;
+        }
 
         public List<DowngradeResolver.PlanEntry> downgradeEntries() {
             List<DowngradeResolver.PlanEntry> out = new ArrayList<>();
@@ -136,7 +144,7 @@ public final class OfferPlanner {
                     snapshot.offerIndex(), player.getGameProfile().getName(), adapterId, planned.size(), snapshot.displayedRequirement(),
                     snapshot.difficultyScale().referenceMaxCost(), String.format("%.1f", difficulty.score()), difficulty.tier().id(), patternSetId);
         }
-        return new Plan(snapshot, List.copyOf(entries), difficulty, patternSetId, params, seed, primaryProfile.theme(), enabled);
+        return new Plan(snapshot, List.copyOf(entries), difficulty, patternSetId, params, seed, primaryProfile.theme(), enabled, event.getDenial());
     }
 
     /** The clue enchantment when it is in the plan, otherwise the most valuable entry (ties: lowest id). */

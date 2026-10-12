@@ -18,12 +18,17 @@ import com.otectus.immersiveenchanting.ritual.RitualPattern;
 import com.otectus.immersiveenchanting.ritual.ScoreResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -46,10 +51,15 @@ public final class ClientRitualController {
     private static boolean cancelOnArrival;
     private static ResultView result;
     private static ScoreResult localResult;
-    /** A session whose screen closed mid-ritual; its outcome is reported in the action bar. */
+    /** A session whose screen closed mid-ritual; its outcome is reported in chat, where it can be read later. */
     private static UUID orphan;
     private static Component message;
     private static long messageUntil;
+    /**
+     * Keys seen going down and not yet up while the ritual owns input. A key still held from the ritual (or its
+     * auto-repeat, which arrives as another press) neither dismisses the result nor confirms an abandon.
+     */
+    private static final Set<Integer> heldKeys = new HashSet<>();
 
     public static Phase phase() {
         return phase;
@@ -131,7 +141,7 @@ public final class ClientRitualController {
         if (orphan != null && orphan.equals(msg.sessionId())) {
             orphan = null;
             Minecraft mc = Minecraft.getInstance();
-            if (mc.player != null) mc.player.displayClientMessage(Component.translatable("immersive_enchanting.result." + msg.band().id()), true);
+            if (mc.player != null) mc.gui.getChat().addMessage(orphanSummary(ResultView.of(msg)));
             return;
         }
         if (sessionId == null || !sessionId.equals(msg.sessionId())) return;
@@ -153,7 +163,7 @@ public final class ClientRitualController {
         if (msg.sessionId() != null && sessionId != null && !msg.sessionId().equals(sessionId)) return;
         if (msg.sessionId() == null && phase != Phase.REQUESTED) return;
         boolean quiet = msg.reason() == AbortReason.BYPASSED || (msg.reason() == AbortReason.CANCELLED && phase == Phase.AWAITING_RESULT);
-        if (!quiet) showMessage(Component.translatable(msg.reason().translationKey()));
+        if (!quiet) showMessage(msg.detail() != null ? msg.detail() : Component.translatable(msg.reason().translationKey()));
         reset();
     }
 
@@ -197,7 +207,33 @@ public final class ClientRitualController {
         reset();
     }
 
+    /**
+     * The outcome of a ritual whose table closed first, for chat: the band, what happened to each enchantment and what
+     * it cost - the same facts as the result panel, which is no longer there to show them.
+     */
+    static Component orphanSummary(ResultView view) {
+        Component band = Component.translatable(view.abandoned() ? "immersive_enchanting.result.abandoned"
+                : "immersive_enchanting.result." + view.band().id()).withStyle(view.band().isFailure() ? ChatFormatting.RED : ChatFormatting.GOLD);
+        List<Component> fates = new ArrayList<>();
+        for (ResultView.Line line : view.lines()) {
+            fates.add(switch (line.fate()) {
+                case KEPT -> Component.translatable("immersive_enchanting.result.kept", line.name()).withStyle(ChatFormatting.GREEN);
+                case WEAKENED -> Component.translatable("immersive_enchanting.result.weakened", line.name(),
+                        Component.translatable("enchantment.level." + line.toLevel())).withStyle(ChatFormatting.YELLOW);
+                case LOST -> Component.translatable("immersive_enchanting.result.lost", line.name()).withStyle(ChatFormatting.RED);
+            });
+        }
+        Component cost = view.xpLevels() == 0 && view.xpPoints() == 0 && view.lapis() == 0
+                ? Component.translatable("immersive_enchanting.result.no_cost")
+                : view.xpPoints() > 0 ? Component.translatable("immersive_enchanting.result.cost_points", view.xpPoints(), view.lapis())
+                : Component.translatable("immersive_enchanting.result.cost", view.xpLevels(), view.lapis());
+        return Component.translatable("immersive_enchanting.result.orphan", band,
+                fates.isEmpty() ? Component.literal("-") : ComponentUtils.formatList(fates, Component.literal(", ")),
+                cost.copy().withStyle(ChatFormatting.GRAY));
+    }
+
     public static void reset() {
+        heldKeys.clear();
         phase = Phase.IDLE;
         ritual = null;
         sessionId = null;
@@ -209,6 +245,7 @@ public final class ClientRitualController {
 
     public static void onLogout() {
         reset();
+        heldKeys.clear();
         orphan = null;
         cancelOnArrival = false;
         message = null;
@@ -217,19 +254,23 @@ public final class ClientRitualController {
     // ---- input ----------------------------------------------------------------------------------------------------
 
     public static void keyPressed(int keyCode, int scanCode) {
+        boolean fresh = heldKeys.add(keyCode);
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            escape();
+            if (fresh) escape();
             return;
         }
         switch (phase) {
             case PLAYING -> ritual.press(RitualKeyMappings.laneForKey(keyCode, scanCode, ritual.pattern.anchors()));
-            case RESULT -> dismissResult();
+            case RESULT -> {
+                if (fresh) dismissResult();
+            }
             default -> {
             }
         }
     }
 
     public static void keyReleased(int keyCode, int scanCode) {
+        heldKeys.remove(keyCode);
         if (phase == Phase.PLAYING) ritual.release(RitualKeyMappings.laneForKey(keyCode, scanCode, ritual.pattern.anchors()));
     }
 
@@ -272,9 +313,10 @@ public final class ClientRitualController {
 
     // ---- messages -------------------------------------------------------------------------------------------------
 
+    /** A notice over the table, kept long enough to read: at least five seconds, longer for longer text. */
     public static void showMessage(Component text) {
         message = text;
-        messageUntil = System.currentTimeMillis() + 3500;
+        messageUntil = System.currentTimeMillis() + Math.max(5000, 1500 + 60L * text.getString().length());
     }
 
     @Nullable
