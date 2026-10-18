@@ -3,6 +3,12 @@
 All notable changes to Immersive Enchanting are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.1.2 - 2026-10-18
+
+### Added
+
+- Added Spanish, Brazilian Portuguese, Russian, and Simplified Chinese translations.
+
 ## 1.1.1 - 2026-10-12
 
 1.1.0 was never released; its changes ship in this version.
